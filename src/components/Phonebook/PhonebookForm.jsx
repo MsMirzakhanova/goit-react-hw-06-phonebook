@@ -1,6 +1,9 @@
-import  { useState } from 'react';
+import { useState } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 import { ContactInputForm } from './Phonebook.styled';
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
+import {addContacts} from "../redux/contacts.slice"
 
 
 const shortid = require('shortid');
@@ -8,9 +11,28 @@ const inputNameId = shortid.generate();
 const inputNumberId = shortid.generate();
 const buttonId = shortid.generate();
 
-export function PhonebookForm ({onSubmit}) {
+export function PhonebookForm () {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
+  const dispatch = useDispatch();
+
+  const onAddContacts = () => {
+    const newContacts = {
+      id: shortid.generate(),
+      name,
+      number,
+    };
+
+    const normalizeName = newContacts.name.toLowerCase();
+    const isNameInContact = newContacts.find(
+      newContact => newContact.name.toLowerCase() === normalizeName
+    );
+    isNameInContact ? toast.success(`${newContacts.name} is already in contacts`) :
+      dispatch(addContacts(newContacts));
+    reset();
+  };
+
+  
 
 
   const handleChange = e => {
@@ -31,13 +53,20 @@ export function PhonebookForm ({onSubmit}) {
   
   };  
 
-  const handleSubmit = e => {
-    e.preventDefault();
+  // const handleSubmit = e => {
+  //   e.preventDefault();
 
-    onSubmit(name, number);
-    reset();
+  //   onSubmit(name, number);
+  //   reset();
 
-  }
+  // }
+
+  // const formSubmitHandler = (name, number) => { 
+    // const contact = {
+    //   id: shortid.generate(),
+    //   name,
+    //   number,
+    // };
 
   const reset = () => {
     setName('')
@@ -45,7 +74,7 @@ export function PhonebookForm ({onSubmit}) {
   };
  
     return (
-  <ContactInputForm autoComplete='off' onSubmit={handleSubmit}>
+  <ContactInputForm autoComplete='off' onSubmit={onAddContacts}>
 <label htmlFor={inputNameId}>Name</label>
 <input
   type="text"
@@ -68,8 +97,10 @@ export function PhonebookForm ({onSubmit}) {
   title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
   required
 />
-<button type="submi" id={buttonId}>Add contact</button>
-</ContactInputForm>
+        <button type="submi" id={buttonId}>Add contact</button>
+        <Toaster />
+      </ContactInputForm>
+      
     );
   }
 
