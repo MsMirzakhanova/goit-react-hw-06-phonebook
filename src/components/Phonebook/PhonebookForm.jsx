@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
 import { ContactInputForm } from './Phonebook.styled';
-import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
+
+import { useDispatch, useSelector } from 'react-redux';
 import {addContacts} from "../redux/contacts.slice"
 
 
@@ -16,19 +16,20 @@ export function PhonebookForm () {
   const [number, setNumber] = useState('');
   const dispatch = useDispatch();
 
-  const onAddContacts = () => {
-    const newContacts = {
+  const contacts = useSelector((state) => state.contacts.contacts);
+
+  const onAddContacts = e => {
+   e.preventDefault();
+
+    const newContact = {
       id: shortid.generate(),
       name,
       number,
     };
 
-    const normalizeName = newContacts.name.toLowerCase();
-    const isNameInContact = newContacts.find(
-      newContact => newContact.name.toLowerCase() === normalizeName
-    );
-    isNameInContact ? toast.success(`${newContacts.name} is already in contacts`) :
-      dispatch(addContacts(newContacts));
+    const normalizeName = newContact.name.toLowerCase();
+    const isNameInContact = contacts.find(newContact => newContact.name.toLowerCase() === normalizeName);
+    isNameInContact ? toast.success(`${newContact.name} is already in contacts`) : dispatch(addContacts(newContact));
     reset();
   };
 
@@ -53,20 +54,7 @@ export function PhonebookForm () {
   
   };  
 
-  // const handleSubmit = e => {
-  //   e.preventDefault();
 
-  //   onSubmit(name, number);
-  //   reset();
-
-  // }
-
-  // const formSubmitHandler = (name, number) => { 
-    // const contact = {
-    //   id: shortid.generate(),
-    //   name,
-    //   number,
-    // };
 
   const reset = () => {
     setName('')
@@ -105,8 +93,6 @@ export function PhonebookForm () {
   }
 
 
-PhonebookForm.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-};
+
 
 

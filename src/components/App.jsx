@@ -54,10 +54,10 @@ export function App () {
 //   const getVisibleContacts = () => {
 //     const normalizedFilter = filter.toLowerCase();
 
-//     return contacts.filter(contact =>
-//       contact.name.toLowerCase().includes(normalizedFilter)
-//     );
-//   };
+  //   return contacts.filter(contact =>
+  //     contact.name.toLowerCase().includes(normalizedFilter)
+  //   );
+  // };
 
 //   const changeFilter = e => {
 //     setFilter(e.currentTarget.value);
@@ -70,10 +70,8 @@ export function App () {
       <h1>Phonebook</h1>
         <PhonebookForm/>
         <h2>Contacts</h2>
-        <Filter value={filter} onChange={changeFilter} />
-        <ContactsList
-          contacts={getVisibleContacts()}
-          />
+        <Filter />
+        <ContactsList/>
         </Container>
     );
     }
